@@ -1,0 +1,108 @@
+<div class="bg-slate-100 rounded-xl p-5">
+  <div>
+    <div *ngIf="!imageUrl">
+      <input
+        type="file"
+        accept="image/png, image/jpeg"
+        *ngIf="!imageUrl"
+        (change)="onFileChange($event)"
+        class="hidden"
+        #fileInput
+      />
+      <button
+        (click)="openFileInput()"
+        class="w-full h-24 border-2 border-dashed border-blue-100 rounded-xl flex justify-center items-center mb-5 text-blue-500"
+      >
+        Upload Image
+      </button>
+
+      <span class="mb-2 block text-center text-sm"
+        >Or use one of the example images:</span
+      >
+
+      <div class="grid grid-cols-4 gap-5">
+        <button (click)="setImage('assets/1.jpg')">
+          <img src="assets/1.jpg" alt="Example 1" class="w-full" />
+        </button>
+        <button (click)="setImage('assets/2.jpg')">
+          <img src="assets/2.jpg" alt="Example 2" class="w-full" />
+        </button>
+        <button (click)="setImage('assets/3.jpg')">
+          <img src="assets/3.jpg" alt="Example 3" class="w-full" />
+        </button>
+        <button (click)="setImage('assets/4.jpg')">
+          <img src="assets/4.jpg" alt="Example 4" class="w-full" />
+        </button>
+      </div>
+    </div>
+    <div class="flex flex-col md:flex-row mb-5 gap-5" *ngIf="imageUrl">
+      <div class="relative cursor-crosshair w-full md:w-1/2">
+        <img
+          [src]="imageUrl"
+          alt="License Plate"
+          class="w-full"
+          (click)="markCorner($event)"
+        />
+        <div
+          *ngFor="let corner of corners"
+          class="absolute w-1 h-1 bg-green-500 rounded-full"
+          [style.left.px]="corner.x"
+          [style.top.px]="corner.y"
+        >
+          <span
+            class="text-2xs bg-white text-black pointer-events-none scale-50 absolute"
+          >
+            (X:{{ corner.x }}, Y:{{ corner.y }})
+          </span>
+        </div>
+      </div>
+
+      <div class="w-full md:h-auto md:w-1/2 bg-white rounded-xl p-5 space-y-2">
+        <div
+          *ngFor="let corner of corners"
+          class="flex space-x-2 bg-slate-100 rounded-xl p-2"
+        >
+          <span class="text-sm">X: {{ corner.x }}</span>
+          <span class="text-sm">Y: {{ corner.y }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div
+      *ngIf="imageUrl"
+      class="flex justify-between flex-col md:flex-row gap-2"
+    >
+      <button
+        arivoButton
+        (click)="saveData()"
+        [disabled]="corners.length !== 4"
+      >
+        Save Data
+      </button>
+
+      <button
+        arivoButton
+        (click)="clearData()"
+        [disabled]="corners.length === 0"
+      >
+        Reset Data Points
+      </button>
+
+      <button arivoButton (click)="resetImage()" [disabled]="!imageUrl">
+        Reset Image
+      </button>
+
+      <button
+        arivoButton
+        (click)="undoCorner()"
+        [disabled]="corners.length === 0"
+      >
+        Undo Last Corner
+      </button>
+
+      <button arivoButton (click)="redoCorner()" [disabled]="!tempCorner">
+        Revert Last Corner
+      </button>
+    </div>
+  </div>
+</div>
